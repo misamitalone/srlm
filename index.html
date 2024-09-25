@@ -6,57 +6,30 @@
 
 <select id="gp_data" onchange="load_gp()"> </select>
 
-<div id="shg"></div>
+<div id="tbody"></div>
 
 </select>
 
 
 <script type="text/javascript">
-function load_block(){
-	var block = document.getElementById('block').value;
-	if(block === ''){
-		return false;
-	}else{
-	fetch('loadData.php?block=' + block)
+function loadTable(){ 
+	fetch('load.php')
 	.then((response) => response.json())
 	.then((data)=>{
-		var gp_data = document.getElementById('gp_data');
+		var tbody = document.getElementById('tbody');
 		if(data['empty']){
-			gp_data.innerHTML = 'Not Found Data';
+			tbody.innerHTML = '<h3>No Record Found.</h3>'
 		}else{
-			var option = '<option value="">Select Nyay Panchayat</option>';
+			var tr = '';
 			for(var i in data){
-				option += `<option value="${data[i].Nyay_Panchayat}"> ${data[i].Nyay_Panchayat} </option>
-                `;
+				tr += `<p>${data[i].color}</p>`;
 			}
-			gp_data.innerHTML = option;
+			tbody.innerHTML = tr;
 		}
 	})
-	}
-};
-
-function load_gp(){
-    var block = document.getElementById('block').value;
-	var gp_data = document.getElementById('gp_data').value;
-	if(gp_data === ''){
-		return false;
-	}else{
-	fetch('loadData.php?block=' + block + '&gp=' + gp_data )
-	.then((response) => response.json())
-	.then((data)=>{
-		var shg = document.getElementById('shg');
-		if(data['empty']){
-			shg.innerHTML = '&gp='+gp_data;
-		}else{
-			var option1 = '';
-			for(var i in data){
-				option1 += `${data[i].GP_Name} <br />
-                `;
-			}
-			shg.innerHTML = option1;
-		}
-	})
-	}
-};
+	.catch((error) => {
+		show_message('error',"Can't Fetch Data");
+	});
+}
 
 </script>
