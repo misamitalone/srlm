@@ -1,1 +1,62 @@
-Hello
+<select id="block" onchange="load_block()">
+    <option value="">Select Block</option>
+    <option value="AMBIAPUR">AMBIAPUR</option>
+    <option value="ASAFPUR">ASAFPUR</option>
+</select>
+
+<select id="gp_data" onchange="load_gp()"> </select>
+
+<div id="shg"></div>
+
+</select>
+
+
+<script type="text/javascript">
+function load_block(){
+	var block = document.getElementById('block').value;
+	if(block === ''){
+		return false;
+	}else{
+	fetch('loadData.php?block=' + block)
+	.then((response) => response.json())
+	.then((data)=>{
+		var gp_data = document.getElementById('gp_data');
+		if(data['empty']){
+			gp_data.innerHTML = 'Not Found Data';
+		}else{
+			var option = '<option value="">Select Nyay Panchayat</option>';
+			for(var i in data){
+				option += `<option value="${data[i].Nyay_Panchayat}"> ${data[i].Nyay_Panchayat} </option>
+                `;
+			}
+			gp_data.innerHTML = option;
+		}
+	})
+	}
+};
+
+function load_gp(){
+    var block = document.getElementById('block').value;
+	var gp_data = document.getElementById('gp_data').value;
+	if(gp_data === ''){
+		return false;
+	}else{
+	fetch('loadData.php?block=' + block + '&gp=' + gp_data )
+	.then((response) => response.json())
+	.then((data)=>{
+		var shg = document.getElementById('shg');
+		if(data['empty']){
+			shg.innerHTML = '&gp='+gp_data;
+		}else{
+			var option1 = '';
+			for(var i in data){
+				option1 += `${data[i].GP_Name} <br />
+                `;
+			}
+			shg.innerHTML = option1;
+		}
+	})
+	}
+};
+
+</script>
